@@ -1,12 +1,19 @@
 {
   lib,
+  pkgs,
   buildGoModule,
   fetchFromGitHub,
+  installShellFiles,
 }:
 
 buildGoModule rec {
   pname = "dstask";
   version = "0.27";
+
+  nativeBuildInputs = [
+    installShellFiles
+    pkgs.git # system dependency, even for completion generation commands
+  ];
 
   src = fetchFromGitHub {
     owner = "naggie";
@@ -17,6 +24,21 @@ buildGoModule rec {
 
   vendorHash = "sha256-/0ZCqL2dXgeeYlcBmkIOGcB+XJ0J2mSV5xOQJT3Dy9k=";
   doCheck = false;
+
+  postInstall = ''
+    # dstask requires that data is initialized, so we create an empty database:
+    # https://github.com/naggie/dstask/issues/196
+    export DSTASK_GIT_REPO=/tmp/.dstask
+
+    # piping the output skips user validation (y/n) for the creation of the
+    # database.
+    $out/bin/dstask | cat
+
+    installShellCompletion --cmd dstask \
+      --bash <($out/bin/dstask bash-completion) \
+      --fish <($out/bin/dstask fish-completion) \
+      --zsh <($out/bin/dstask zsh-completion)
+  '';
 
   # The ldflags reduce the executable size by stripping some debug stuff.
   # The other variables are set so that the output of dstask version shows the

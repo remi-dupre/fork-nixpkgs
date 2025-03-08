@@ -6,22 +6,16 @@
 
 buildGoModule rec {
   pname = "dstask";
-  version = "0.26";
+  version = "0.27";
 
   src = fetchFromGitHub {
     owner = "naggie";
     repo = pname;
-    rev = "v${version}";
-    sha256 = "sha256-xZFQQDK+yGAv4IbuNe2dvNa3GDASeJY2mOYw94goAIM=";
+    rev = version;
+    sha256 = "sha256-bepG8QuOJnV2j1AWNSmfExx+Kpg0TIIhhuS54kftbQc=";
   };
 
-  # Set vendorHash to null because dstask vendors its dependencies (meaning
-  # that third party dependencies are stored in the repository).
-  #
-  # Ref <https://github.com/NixOS/nixpkgs/pull/87383#issuecomment-633204382>
-  # and <https://github.com/NixOS/nixpkgs/blob/d4226e3a4b5fcf988027147164e86665d382bbfa/pkgs/development/go-modules/generic/default.nix#L18>
-  vendorHash = null;
-
+  vendorHash = "sha256-/0ZCqL2dXgeeYlcBmkIOGcB+XJ0J2mSV5xOQJT3Dy9k=";
   doCheck = false;
 
   # The ldflags reduce the executable size by stripping some debug stuff.

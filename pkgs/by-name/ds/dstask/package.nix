@@ -56,6 +56,5 @@ buildGoModule (finalAttrs: {
       remidupre
       stianlagstad
     ];
-    platforms = lib.platforms.linux;
   };
 })
